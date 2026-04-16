@@ -1,21 +1,19 @@
 # <p align="center">🌸 APEX IRIS FRAMEWORK 🌸</p>
 ## <p align="center">An Advanced Model Evaluation & Robustness Infrastructure</p>
 
----
-
 <p align="center">
   <br>
   <a href="https://satyamshelke2005.github.io/Apex-Iris-Framework/">
-    <img src="https://img.shields.io/badge/🚀%20ENTER%20THE%20GLOBAL%20LEADERBOARD-CLICK%20HERE-FF007F?style=for-the-badge&logo=rocket&logoColor=white" width="600" />
+    <img src="https://img.shields.io/badge/🚀%20ACCESS%20LIVE%20LEADERBOARD-VIEW%20RANKINGS-blueviolet?style=for-the-badge&logo=rocket&logoColor=white" width="700" />
   </a>
   <br>
   <br>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/System_Status-Active-00FFFF?style=for-the-badge&logo=github" />
-  <img src="https://img.shields.io/badge/Platform-Independent-008080?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Security-RSA_Encrypted-00FFFF?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/System_Status-Active-00FFFF?style=flat-square&logo=github" />
+  <img src="https://img.shields.io/badge/Platform-Independent-008080?style=flat-square" />
+  <img src="https://img.shields.io/badge/Security-RSA_Encrypted-00FFFF?style=flat-square" />
 </p>
 
 ---
