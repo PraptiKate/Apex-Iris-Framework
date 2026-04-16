@@ -2,6 +2,12 @@
 ## <p align="center">An Advanced Model Evaluation & Robustness Infrastructure</p>
 
 <p align="center">
+  <a href="https://satyamshelke2005.github.io/Apex-Iris-Framework/">
+    <img src="https://img.shields.io/badge/🚀_ENTER_DASHBOARD-Live_Leaderboard-FF69B4?style=for-the-badge&logo=rocket" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/System_Status-Active-00FFFF?style=for-the-badge&logo=github" />
   <img src="https://img.shields.io/badge/Platform-Independent-008080?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Security-RSA_Encrypted-00FFFF?style=for-the-badge" />
@@ -22,8 +28,8 @@ The **Apex Iris Framework** is a high-performance system designed to stress-test
 
 ### 🛠️ Innovation: Dynamic Percentile Thresholding
 Standard models often suffer from **"Class Collapse"** when faced with high entropy or noise, defaulting to majority-class bias. Our framework implements a proprietary fix:
-- **The Problem:** Static $0.5$ decision boundaries fail under realistic feature corruption.
-- **The Solution:** We utilize **Dynamic Percentile Thresholding**, calculating decision boundaries based on the top $35\%$-$40\%$ of softmax probabilities.
+- **The Problem:** Static 0.5 decision boundaries fail under realistic feature corruption.
+- **The Solution:** We utilize **Dynamic Percentile Thresholding**, calculating decision boundaries based on the top 35%-40% of softmax probabilities.
 - **Result:** Maintains high precision and label diversity even in "noisy" environments.
 
 ---
@@ -42,7 +48,7 @@ Our framework utilizes a specialized binary-mapped version of the **Iris Botanic
 ### ⚠️ The Ablation Challenge
 Models are evaluated on two distinct test pipelines:
 1. **Standard Set:** Clean feature vectors representing the "Ideal" topology.
-2. **Perturbed Set:** Features injected with **Gaussian Noise** ($\mu=0, \sigma=0.1$) and **Covariate Shifts** to simulate real-world sensor degradation or graph signal interference.
+2. **Perturbed Set:** Features injected with **Gaussian Noise** ($\mu=0, \sigma=0.1$) and **Covariate Shifts** to simulate real-world sensor degradation.
 
 ---
 
@@ -56,18 +62,10 @@ Models are evaluated on two distinct test pipelines:
 
 ---
 
-## 🏆 GLOBAL LEADERBOARD
-Track real-time rankings and model performance scores via our live dashboard.
-
-### 🚀 [CLICK HERE TO ENTER THE APEX IRIS DASHBOARD](https://satyamshelke2005.github.io/Apex-Iris-Framework/)
-
----
-
 ## 📥 Submission Protocol
 Follow these **6 steps** to integrate your model into the Apex evaluation pipeline:
 
 ### 1️⃣ Prepare Environment
-Clone the framework and install the required machine learning libraries:
 ```powershell
 git clone [https://github.com/SatyamShelke2005/Apex-Iris-Framework.git](https://github.com/SatyamShelke2005/Apex-Iris-Framework.git)
 cd Apex-Iris-Framework
