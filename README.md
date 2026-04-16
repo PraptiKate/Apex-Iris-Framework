@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/System_Status-Active-00FFFF?style=flat-square&logo=github" />
-  <img src="https://img.shields.io/badge/Platform-Independent-008080?style=flat-square" />
-  <img src="https://img.shields.io/badge/Security-RSA_Encrypted-00FFFF?style=flat-square" />
+  <img src="https://img.shields.io/badge/System_Status-Active-00FFFF?style=for-the-badge&logo=github" />
+  <img src="https://img.shields.io/badge/Platform-Independent-008080?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Security-RSA_Encrypted-00FFFF?style=for-the-badge" />
 </p>
 
 ---
