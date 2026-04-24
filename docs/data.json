@@ -1,18 +1,23 @@
 [
-  {
-    "name": "Satyam_Harsha_Group-11",
-    "tech": "PyTorch MLP",
-    "accuracy": "98.2",
-    "f1": "97.8",
-    "path": "submissions/Satyam_Harsha_Group-11/",
-    "date": "2026-04-14"
-  },
-  {
-     "name": "Sahil_Pasalkar",
-    "tech": "PyTorch MLP",
-    "accuracy": "95.7",
-    "f1": "78.8",
-    "path": "submissions/Sahil_Pasalkar/",
-    "date": "2026-04-23"
-  }
+    {
+        "Participant": "Satyam_Harsha_Group-11",
+        "Architecture": "PyTorch MLP",
+        "Accuracy": "98.2%",
+        "F1-Score": "97.8",
+        "Timestamp": "2026-04-14"
+    },
+    {
+        "Participant": "Sahil_Pasalkar",
+        "Architecture": "PyTorch MLP",
+        "Accuracy": "95.7%",
+        "F1-Score": "78.8",
+        "Timestamp": "2026-04-23"
+    },
+    {
+        "Participant": "Satyam_Anilrao_Shelke",
+        "Architecture": "PyTorch RobustMLP",
+        "Accuracy": "98.5%",
+        "F1-Score": "97.2",
+        "Timestamp": "2026-04-24"
+    }
 ]
