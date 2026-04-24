@@ -11,17 +11,26 @@ from sklearn.preprocessing import StandardScaler
 from cryptography.fernet import Fernet
 
 # ----------------------------
-# 1. Automated Path Logic
+# 1. Dynamic Automated Path Logic
 # ----------------------------
+# Capture the submitter name from GitHub Actions (passed as an environment variable)
+# If running locally, it defaults to your name.
+submitter_raw = os.getenv('SUBMITTER_NAME', 'Satyam_Anilrao_Shelke')
+
+# Clean the name for folder compatibility (removing spaces/special chars)
+clean_name = submitter_raw.replace(" ", "_").replace(".", "_")
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-# The Action expects the 'submission' folder in the repo root
-SUBMISSION_DIR = os.path.join(SCRIPT_DIR, "submission")
+
+# Creating the dynamic path: submissions/SUBMITTER_NAME/
+# This ensures Sir gets his own folder automatically.
+SUBMISSION_DIR = os.path.join(SCRIPT_DIR, "submissions", clean_name)
 os.makedirs(SUBMISSION_DIR, exist_ok=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ----------------------------
-# 2. Data & Model (Standard Logic)
+# 2. Data & Model Logic
 # ----------------------------
 iris = load_iris()
 X, y = iris.data, (iris.target == 1).astype(int)
@@ -68,7 +77,6 @@ with torch.no_grad():
     probs = torch.exp(out)[:, 1].cpu().numpy()
 preds = (probs >= 0.5).astype(int)
 
-# Create the temporary DataFrame
 df_sub = pd.DataFrame({"row_index": range(len(preds)), "target": preds})
 temp_csv = os.path.join(SUBMISSION_DIR, "temp.csv")
 df_sub.to_csv(temp_csv, index=False)
@@ -76,8 +84,6 @@ df_sub.to_csv(temp_csv, index=False)
 # ----------------------------
 # 4. Encryption (final_submissions.csv.enc)
 # ----------------------------
-# Note: Using a fixed key for leaderboard compatibility if your sir has one, 
-# otherwise Fernet.generate_key() works for demo purposes.
 key = Fernet.generate_key() 
 cipher_suite = Fernet(key)
 
@@ -94,16 +100,13 @@ os.remove(temp_csv)
 # ----------------------------
 # 5. Dynamic Metadata Generation
 # ----------------------------
-# This captures the name from the GitHub Action environment variable
-submitter_name = os.getenv('SUBMITTER_NAME', 'Satyam Anilrao Shelke')
-
-# Logic to handle PRN: If it's you, use your PRN, otherwise use a placeholder
-if submitter_name == 'Satyam Anilrao Shelke' or submitter_name == 'SatyamShelke2005':
+# Personalize the PRN field only for you
+if "Satyam" in submitter_raw:
     display_name = "Satyam Anilrao Shelke"
     prn = "1132231165"
 else:
-    display_name = submitter_name
-    prn = "EXTERNAL_CONTRIBUTOR"
+    display_name = submitter_raw
+    prn = "GUEST_SUBMISSION"
 
 metadata = {
     "name": display_name,
@@ -117,4 +120,6 @@ metadata = {
 with open(os.path.join(SUBMISSION_DIR, "metadata.json"), 'w') as f:
     json.dump(metadata, f, indent=4)
 
-print(f"DONE: Metadata generated for {display_name} in {SUBMISSION_DIR}")
+print(f"--- SUCCESS ---")
+print(f"Folder created: submissions/{clean_name}")
+print(f"Metadata generated for: {display_name}")
