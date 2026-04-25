@@ -1,70 +1,56 @@
-name: Auto-Generate Leaderboard Submission
+name: Apex Leaderboard Automation
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/data.json'
+    branches: [ main ]
   pull_request:
     types: [closed]
-    branches:
-      - main
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   build:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0 
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.9'
 
     - name: Install Dependencies
       run: |
-        pip install torch pandas numpy cryptography scikit-learn
+        pip install torch pandas scikit-learn numpy cryptography
 
     - name: Run Processing Script
-      run: |
-        python baseline.py
       env:
         SUBMITTER_NAME: ${{ github.event.pull_request.user.login || github.actor }}
+      run: |
+        python baseline.py
 
     - name: Commit and Push Changes
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
-        # 1. Track all new files created by baseline.py
-        git add .
+        # 1. 'git add -A' is the secret—it stages additions AND deletions
+        git add -A
         
-        # 2. Temporarily hide changes to allow a clean pull
+        # 2. Sync history
         git stash
-        
-        # 3. Update local environment with any remote changes
         git pull origin main --rebase
         
-        # 4. Bring the leaderboard data back
+        # 3. Apply the script's new data.json
         git stash pop || echo "No changes to apply"
         
-        # 5. Finalize the commit
-        git add submissions/ docs/data.json
-        if [ -n "$(git status --porcelain)" ]; then
-          git commit -m "🏆 Auto-update: $SUBMITTER_NAME [skip ci]"
-          git push origin main
-        else
-          echo "No changes to commit."
-        fi
-      env:
-        SUBMITTER_NAME: ${{ github.event.pull_request.user.login || github.actor }}
+        # 4. Final force-add of the correct data and finish
+        git add docs/data.json submissions/
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update: Leaderboard Sync [skip ci]" && git push origin main)
