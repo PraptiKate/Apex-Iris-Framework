@@ -1,8 +1,0 @@
-{
-    "name": "Satyam Anilrao Shelke",
-    "PRN": "1132231165",
-    "timestamp": "2026-04-23 14:55:58",
-    "model_type": "PyTorch RobustMLP",
-    "status": "Success",
-    "submission_type": "Automated_CI_CD"
-}
