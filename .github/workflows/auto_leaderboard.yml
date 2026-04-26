@@ -34,6 +34,13 @@ jobs:
       env:
         SUBMITTER_NAME: ${{ github.event.pull_request.user.login || github.actor }}
       run: |
+        # --- SHIELD: Physically delete ghost folders in the runner ---
+        # This makes it impossible for baseline.py to "see" them
+        rm -rf submissions/Satyam_Anilrao_Shelke/
+        rm -rf submissions/SatyamShelke2005/
+        rm -rf submissions/Test_User_SatyamShelke2005/
+        
+        # Now run the script (ensure you've updated baseline.py with the filter too!)
         python baseline.py
 
     - name: Commit and Push Changes
@@ -41,16 +48,11 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
-        # 1. 'git add -A' is the secret—it stages additions AND deletions
+        # Add all changes, including the deletions we performed above
         git add -A
         
-        # 2. Sync history
-        git stash
-        git pull origin main --rebase
+        # Sync with the remote. If there's a conflict, the runner's version (the clean one) wins.
+        git pull origin main --strategy-option=theirs
         
-        # 3. Apply the script's new data.json
-        git stash pop || echo "No changes to apply"
-        
-        # 4. Final force-add of the correct data and finish
-        git add docs/data.json submissions/
+        # Final check: Only commit if there is actually a difference
         git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update: Leaderboard Sync [skip ci]" && git push origin main)
