@@ -1,9 +1,12 @@
 {
     "name": "PraptiKate",
     "PRN": "EXTERNAL_CONTRIBUTOR",
-    "timestamp": "2026-04-26 15:52:12",
-    "model_type": "PyTorch RobustMLP",
+    "timestamp": "2026-04-26 17:29:27",
+    "model_type": "Improved PyTorch RobustMLP",
     "status": "Success",
     "accuracy": "100.00%",
+    "precision": "100.00%",
+    "recall": "100.00%",
+    "f1_score": "100.00%",
     "submission_type": "Automated_CI_CD"
 }
