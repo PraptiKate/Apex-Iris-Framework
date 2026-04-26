@@ -12,15 +12,26 @@ from cryptography.fernet import Fernet
 from sklearn.metrics import f1_score
 
 # ----------------------------
-# 1. Dynamic Automated Path Logic
+# 1. Dynamic Automated Path Logic & Ghost Filtering
 # ----------------------------
+# These are the names we want to BAN from the leaderboard forever
+BLOCK_LIST = ["Satyam_Anilrao_Shelke", "SatyamShelke2005", "Test_User"]
+
 submitter_raw = os.getenv('SUBMITTER_NAME', 'Satyam_Anilrao_Shelke')
+
+# TERMINATE immediately if the current run is for a blocked user
+if any(blocked_name in submitter_raw for blocked_name in BLOCK_LIST):
+    print(f"!!! CRITICAL: Blocking execution for {submitter_raw} to prevent ghost folders !!!")
+    # We exit with 0 so the GitHub Action doesn't "fail" (turn red), it just stops silently.
+    exit(0)
+
 clean_name = submitter_raw.replace(" ", "_").replace(".", "_")
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SUBMISSION_DIR = os.path.join(SCRIPT_DIR, "submissions", clean_name)
 DATA_JSON_PATH = os.path.join(SCRIPT_DIR, "docs", "data.json")
 
+# Only create directory for valid participants
 os.makedirs(SUBMISSION_DIR, exist_ok=True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -54,7 +65,6 @@ class RobustMLP(torch.nn.Module):
 model = RobustMLP(input_dim=4, num_classes=2).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-# Training Loop
 print(f"--- Training Model for {submitter_raw} ---")
 for epoch in range(100):
     model.train()
@@ -73,17 +83,8 @@ with torch.no_grad():
     probs = torch.exp(out)[:, 1].cpu().numpy()
 preds = (probs >= 0.5).astype(int)
 
-# Console Output: Predictions
-print("\n--- Target Predictions (First 20) ---")
-print(preds[:20])
-
 accuracy_val = np.mean(preds == y_test) * 100
 f1_val = f1_score(y_test, preds, average='weighted') * 100
-
-# Console Output: Metrics Summary
-print(f"\n--- Evaluation Metrics ---")
-print(f"Accuracy: {accuracy_val:.2f}%")
-print(f"F1-Score: {f1_val:.2f}")
 
 df_sub = pd.DataFrame({"row_index": range(len(preds)), "target": preds})
 temp_csv = os.path.join(SUBMISSION_DIR, "temp.csv")
@@ -102,13 +103,15 @@ encrypted_data = cipher_suite.encrypt(raw_data)
 with open(os.path.join(SUBMISSION_DIR, "final_submissions.csv.enc"), 'wb') as f:
     f.write(encrypted_data)
 
-os.remove(temp_csv)
+if os.path.exists(temp_csv):
+    os.remove(temp_csv)
 
 # ----------------------------
 # 5. Metadata Generation
 # ----------------------------
+# Defaulting to GUEST if it's not a known variation of your name
 if "Satyam" in submitter_raw:
-    display_name = "Satyam Anilrao Shelke"
+    display_name = "Satyam Shelke"
     prn = "1132231165"
 else:
     display_name = submitter_raw
@@ -128,7 +131,7 @@ with open(os.path.join(SUBMISSION_DIR, "metadata.json"), 'w') as f:
     json.dump(metadata, f, indent=4)
 
 # ----------------------------
-# 6. Automated Leaderboard Sync
+# 6. Automated Leaderboard Sync & Scrubbing
 # ----------------------------
 new_entry = {
     "Participant": display_name,
@@ -145,12 +148,22 @@ try:
     else:
         leaderboard_data = []
 
-    leaderboard_data = [e for e in leaderboard_data if e.get("Participant") != display_name]
+    # SCRUBBING PHASE: Remove any ghosts if they somehow got back in
+    # This matches the names that keep appearing in your data.json
+    NAMES_TO_SCRUB = ["Satyam Anilrao Shelke", "SatyamShelke2005", "Test_User"]
+    
+    leaderboard_data = [
+        e for e in leaderboard_data 
+        if e.get("Participant") not in NAMES_TO_SCRUB 
+        and e.get("Participant") != display_name # Remove old entry of current user to update
+    ]
+    
+    # Finally, append the current valid entry
     leaderboard_data.append(new_entry)
 
     with open(DATA_JSON_PATH, 'w') as f:
         json.dump(leaderboard_data, f, indent=4)
-    print(f"\nLeaderboard successfully updated in: {DATA_JSON_PATH}")
+    print(f"\nLeaderboard successfully updated and scrubbed.")
 
 except Exception as e:
     print(f"\nLeaderboard update failed: {e}")
